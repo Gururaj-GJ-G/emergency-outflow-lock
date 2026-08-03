@@ -1,0 +1,131 @@
+{
+  "library_version": "2.0.0",
+  "signals": {
+    "ROOT_01": {
+      "name": "Rooted Device",
+      "weight": 40,
+      "category": "device_integrity"
+    },
+    "EMU_01": {
+      "name": "Emulator Detected",
+      "weight": 50,
+      "category": "device_integrity"
+    },
+    "MAL_01": {
+      "name": "Malware / Blacklisted App",
+      "weight": 50,
+      "category": "malware",
+      "cap": 60
+    },
+    "HOOK_01": {
+      "name": "Runtime Hooking",
+      "weight": 20,
+      "category": "device_integrity"
+    },
+    "PERM_01": {
+      "name": "Loan Permission Combo",
+      "weight": 30,
+      "category": "permission"
+    },
+    "RC_01": {
+      "name": "Remote Control App",
+      "weight": 25,
+      "category": "remote_access"
+    },
+    "OVER_01": {
+      "name": "Overlay + Accessibility Combo",
+      "weight": 25,
+      "category": "remote_access"
+    },
+    "PERM_02": {
+      "name": "SMS + Device Admin Combo",
+      "weight": 20,
+      "category": "permission"
+    },
+    "NOTIF_01": {
+      "name": "Notification Listener",
+      "weight": 15,
+      "category": "otp_risk"
+    },
+    "APP_01": {
+      "name": "Client App Tampering",
+      "weight": 35,
+      "category": "app_integrity"
+    },
+    "INT_01": {
+      "name": "Optional Integrity Failure",
+      "weight": 35,
+      "category": "app_integrity"
+    },
+    "CLONE_01": {
+      "name": "App Cloner / Work Profile Abuse",
+      "weight": 25,
+      "category": "app_integrity"
+    },
+    "SCREEN_01": {
+      "name": "Screen Capture Risk",
+      "weight": 20,
+      "category": "remote_access"
+    },
+    "INSTALL_01": {
+      "name": "Sideloaded Risk App",
+      "weight": 20,
+      "category": "malware"
+    },
+    "PERM_03": {
+      "name": "Permission Drift",
+      "weight": 20,
+      "category": "permission"
+    },
+    "DBG_01": {
+      "name": "Debugging Surface",
+      "weight": 10,
+      "category": "device_integrity"
+    },
+    "NET_01": {
+      "name": "VPN / Proxy Environment",
+      "weight": 15,
+      "category": "network"
+    },
+    "SESSION_01": {
+      "name": "Rapid Retry Pattern",
+      "weight": 15,
+      "category": "session"
+    },
+    "PHISH_01": {
+      "name": "Phishing Link Click (verified domain)",
+      "weight": 45,
+      "category": "phishing"
+    },
+    "SIM_01": {
+      "name": "SIM Swap Indicator",
+      "weight": 45,
+      "category": "identity"
+    },
+    "TROJAN_01": {
+      "name": "Banking Trojan Signature Match",
+      "weight": 55,
+      "category": "malware"
+    },
+    "GEOVEL_01": {
+      "name": "Geo-Velocity Anomaly",
+      "weight": 30,
+      "category": "behavioral"
+    },
+    "BENEF_01": {
+      "name": "New/High-Risk Beneficiary",
+      "weight": 25,
+      "category": "transaction"
+    },
+    "AMT_01": {
+      "name": "Amount Deviation from Baseline",
+      "weight": 20,
+      "category": "transaction"
+    },
+    "OTPFWD_01": {
+      "name": "OTP Auto-Forward Pattern",
+      "weight": 40,
+      "category": "otp_risk"
+    }
+  }
+}

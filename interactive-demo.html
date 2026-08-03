@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZEOL — Emergency Outflow Lock Standard</title>
+<meta name="description" content="ZEOL is a decision standard for compromise-triggered outflow restriction: when to lock, what to lock, for how long, and why. 25 signals, 6 attack patterns, a full lock lifecycle. Incoming money is never touched.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #c8a96e;
+  --accent-d: #a8894e;
+  --navy: #1B3A5C;
+  --bg: #06080d;
+  --bg1: #0d1018;
+  --bg2: #111520;
+  --border: #1e2229;
+  --border2: #2a3040;
+  --text: #e8eaf0;
+  --muted: #7a8090;
+  --green: #3ecf8e;
+  --red: #e05252;
+  --amber: #E8953A;
+  --blue: #5b8ef5;
+  --purple: #a78bfa;
+  --teal: #2dd4bf;
+  --pink: #f472b6;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:#1e2535;border-radius:99px;}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,13,0.97);border-bottom:1px solid rgba(30,34,41,0.8);padding:0;backdrop-filter:blur(20px);}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0.85rem 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;}
+.nav-logo{font-family:'Inter',sans-serif;font-size:1rem;font-weight:800;letter-spacing:0.12em;color:#e8e8e8;text-decoration:none;}
+.nav-logo span{color:var(--accent);}
+.nav-links{list-style:none;display:flex;align-items:center;gap:1.9rem;}
+.nav-links>li>a{color:#7a8090;font-size:0.84rem;font-weight:500;text-decoration:none;transition:color 0.15s;}
+.nav-links>li>a:hover{color:#e8e8e8;}
+.nav-actions{display:flex;align-items:center;gap:0.85rem;}
+.nav-cta{background:var(--accent)!important;color:#0a0a0a!important;padding:0.5rem 1.1rem;border-radius:4px;font-weight:700;font-size:0.8rem!important;white-space:nowrap;text-decoration:none;}
+.nav-toggle{display:none;background:none;border:none;color:#e8e8e8;font-size:1.4rem;cursor:pointer;}
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(6,8,13,0.99);border-bottom:1px solid #1e2229;flex-direction:column;align-items:flex-start;padding:1rem 2rem;gap:0.9rem;}
+  .nav-links.open{display:flex;}
+  .nav-toggle{display:block;}
+  .nav-actions{width:100%;}
+}
+
+/* ── SECTIONS ── */
+.wrap{max-width:1100px;margin:0 auto;padding:0 2rem;}
+.sec{padding:5rem 0;}
+.sec-sm{padding:3rem 0;}
+.sec-tag{font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;}
+.sec-h{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;letter-spacing:-0.03em;color:#fff;line-height:1.15;margin-bottom:1rem;}
+.sec-sub{font-size:1rem;color:var(--muted);max-width:640px;line-height:1.75;}
+.divider{border:none;border-top:1px solid var(--border);margin:0;}
+
+/* ── HERO ── */
+#hero{
+  position:relative;
+  padding:6rem 0 5rem;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(27,58,92,0.35) 0%,transparent 70%);
+  overflow:hidden;
+}
+.hero-inner{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 2rem;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(200,169,110,0.08);border:1px solid rgba(200,169,110,0.25);
+  border-radius:999px;padding:4px 14px 4px 8px;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);
+  margin-bottom:1.5rem;
+}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.85);}}
+.hero-h{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(2.4rem,5vw,4rem);font-weight:700;letter-spacing:-0.04em;
+  color:#fff;line-height:1.08;margin-bottom:1.25rem;max-width:860px;
+}
+.hero-h em{color:var(--accent);font-style:normal;}
+.hero-sub{font-size:1.05rem;color:#9aa3b0;line-height:1.75;max-width:600px;margin-bottom:2rem;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2.5rem;}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border2);
+  border-radius:999px;padding:4px 12px;font-size:0.78rem;color:#9aa3b0;font-weight:500;
+}
+.pill-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.hero-actions{display:flex;flex-wrap:wrap;gap:0.75rem;}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent);color:#0a0a0a;padding:0.8rem 1.8rem;
+  border-radius:6px;font-weight:800;font-size:0.9rem;text-decoration:none;
+  transition:opacity .15s,transform .15s;
+}
+.btn-gold:hover{opacity:0.88;transform:translateY(-1px);}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--text);padding:0.8rem 1.8rem;
+  border-radius:6px;font-weight:600;font-size:0.9rem;text-decoration:none;
+  border:1px solid var(--border2);transition:border-color .15s,color .15s;
+}
+.btn-outline:hover{border-color:rgba(200,169,110,0.5);color:var(--accent);}
+.hero-stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:1px;background:var(--border);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;margin-top:4rem;
+}
+.stat-cell{background:var(--bg1);padding:1.2rem 1.5rem;}
+.stat-n{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1;}
+.stat-l{font-size:0.72rem;color:var(--muted);margin-top:0.3rem;font-weight:500;letter-spacing:0.04em;}
+
+/* ── ASYMMETRY ── */
+.asym-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem;}
+@media(max-width:760px){.asym-grid{grid-template-columns:1fr;}}
+.asym-card{background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:1.75rem;position:relative;overflow:hidden;}
+.asym-card.lockable::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);}
+.asym-card.protected::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);}
+.asym-head{font-size:0.68rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:1rem;}
+.asym-card.lockable .asym-head{color:var(--red);}
+.asym-card.protected .asym-head{color:var(--green);}
+.rail-row{display:flex;align-items:center;gap:10px;padding:0.45rem 0;border-bottom:1px solid rgba(30,34,41,0.5);font-size:0.85rem;}
+.rail-row:last-child{border-bottom:none;}
+.rail-badge{font-family:monospace;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0;min-width:44px;text-align:center;}
+.rail-badge.lock{background:rgba(224,82,82,0.1);color:var(--red);}
+.rail-badge.soft{background:rgba(232,149,58,0.1);color:var(--amber);}
+.rail-badge.allow{background:rgba(62,207,142,0.1);color:var(--green);}
+.rail-name{color:var(--text);font-weight:500;}
+.rail-note{font-size:0.72rem;color:var(--muted);margin-left:auto;text-align:right;}
+.asym-foot{font-size:0.8rem;color:var(--muted);line-height:1.65;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);}
+
+/* ── WHY ── */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-top:2.5rem;}
+.why-card{
+  background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:1.5rem;
+  position:relative;overflow:hidden;
+}
+.why-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--card-color,var(--border));
+}
+.why-title{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.4rem;}
+.why-body{font-size:0.83rem;color:var(--muted);line-height:1.65;}
+.why-tag{
+  display:inline-block;margin-top:0.75rem;
+  font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:2px 8px;border-radius:4px;
+  background:rgba(224,82,82,0.1);color:#e05252;border:1px solid rgba(224,82,82,0.2);
+}
+
+/* ── ARCH ── */
+.arch-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:2rem;}
+.arch-step{background:var(--bg1);padding:1.2rem;position:relative;}
+.arch-step-n{font-size:0.65rem;font-weight:700;letter-spacing:0.14em;color:var(--muted);margin-bottom:0.4rem;}
+.arch-step-t{font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.25rem;}
+.arch-step-d{font-size:0.76rem;color:var(--muted);line-height:1.55;}
+.arch-step.active{background:rgba(27,58,92,0.3);}
+.arch-step.active::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);}
+.boundary-list{margin-top:2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0.75rem;}
+.boundary-item{background:var(--bg1);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;font-size:0.83rem;color:var(--muted);line-height:1.65;}
+.boundary-item b{color:var(--text);display:block;margin-bottom:0.25rem;font-size:0.86rem;}
+
+/* ── SIGNAL LIBRARY ── */
+.sig-filters{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;}
+.sig-filter{
+  padding:5px 14px;border-radius:999px;font-size:0.76rem;font-weight:600;cursor:pointer;
+  background:var(--bg1);border:1px solid var(--border2);color:var(--muted);
+  transition:all .15s;
+}
+.sig-filter:hover{color:var(--text);}
+.sig-filter.active{background:rgba(200,169,110,0.12);border-color:rgba(200,169,110,0.4);color:var(--accent);}
+.sig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:0.75rem;}
+.sig-card{
+  background:var(--bg1);border:1px solid var(--border);border-radius:10px;
+  padding:1rem 1.1rem;transition:border-color .15s,transform .15s;
+  position:relative;
+}
+.sig-card:hover{border-color:var(--border2);transform:translateY(-1px);}
+.sig-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:0.5rem;}
+.sig-id{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;color:var(--muted);font-family:monospace;}
+.sig-weight{
+  font-size:0.68rem;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0;
+  background:rgba(224,82,82,0.1);color:#e05252;
+}
+.sig-weight.med{background:rgba(232,149,58,0.1);color:var(--amber);}
+.sig-weight.low{background:rgba(62,207,142,0.1);color:var(--green);}
+.sig-name{font-size:0.88rem;font-weight:600;color:#fff;margin-bottom:0.3rem;line-height:1.3;}
+.sig-domain-badge{
+  display:inline-flex;align-items:center;gap:4px;margin-top:0.5rem;
+  font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:2px 7px;border-radius:3px;border:1px solid;
+}
+.sig-crit{display:inline-flex;margin-top:0.5rem;margin-left:6px;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;background:rgba(224,82,82,0.12);color:var(--red);border:1px solid rgba(224,82,82,0.3);}
+.sig-crit.corr{background:rgba(232,149,58,0.12);color:var(--amber);border-color:rgba(232,149,58,0.3);}
+.sig-count{font-size:0.78rem;color:var(--muted);margin-bottom:1rem;}
+
+/* ── PATTERNS ── */
+.pb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-top:2rem;}
+.pb-card{
+  background:var(--bg1);border:1px solid var(--border);border-radius:12px;
+  padding:1.5rem;position:relative;overflow:hidden;
+  transition:border-color .2s,transform .15s;
+}
+.pb-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.pb-num{
+  font-family:'Space Grotesk',sans-serif;font-size:2.5rem;font-weight:700;
+  color:rgba(255,255,255,0.05);position:absolute;top:1rem;right:1.2rem;
+  letter-spacing:-0.05em;line-height:1;
+}
+.pb-tag-top{font-size:0.63rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.6rem;}
+.pb-title{font-size:1rem;font-weight:700;color:#fff;margin-bottom:0.5rem;}
+.pb-body{font-size:0.82rem;color:var(--muted);line-height:1.65;margin-bottom:1rem;}
+.pb-sigs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0.9rem;}
+.pb-sig{font-family:monospace;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(91,142,245,0.1);color:var(--blue);border:1px solid rgba(91,142,245,0.25);}
+.pb-action{font-size:0.7rem;font-weight:700;letter-spacing:0.08em;padding:3px 10px;border-radius:4px;display:inline-block;}
+.pb-action.hard{background:rgba(224,82,82,0.12);color:var(--red);border:1px solid rgba(224,82,82,0.3);}
+.pb-action.soft{background:rgba(232,149,58,0.12);color:var(--amber);border:1px solid rgba(232,149,58,0.3);}
+
+/* ── LIFECYCLE ── */
+.chain-nodes{display:flex;flex-direction:column;gap:0;max-width:560px;margin:2rem auto 0;}
+.chain-node{display:flex;align-items:flex-start;gap:16px;padding:1rem 0;position:relative;}
+.chain-node:not(:last-child)::after{
+  content:'';position:absolute;left:17px;top:48px;bottom:-8px;
+  width:2px;background:linear-gradient(to bottom,var(--node-color,#334155),transparent);
+}
+.chain-icon{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(var(--node-rgb,50,80,120),0.15);
+  border:1.5px solid var(--node-color,#334155);font-size:0.72rem;font-weight:800;font-family:monospace;
+  box-shadow:0 0 12px rgba(var(--node-rgb,50,80,120),0.2);color:var(--node-color,#9aa3b0);
+}
+.chain-content{flex:1;padding-top:6px;}
+.chain-label{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:2px;}
+.chain-title{font-size:0.92rem;font-weight:600;color:#fff;margin-bottom:2px;}
+.chain-sig{font-size:0.76rem;color:var(--muted);line-height:1.55;}
+
+.rbi-table{width:100%;border-collapse:collapse;margin-top:1.5rem;font-size:0.84rem;}
+.rbi-table th{background:var(--bg2);color:var(--accent);font-weight:700;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+.rbi-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;line-height:1.55;}
+.rbi-table tr:last-child td{border-bottom:none;}
+.rbi-table tr:hover td{background:rgba(255,255,255,0.02);}
+.rbi-table td:first-child{color:var(--text);font-weight:500;}
+.rbi-code{font-family:monospace;font-size:0.75rem;color:var(--accent);background:rgba(200,169,110,0.08);padding:1px 6px;border-radius:3px;}
+.yes{color:var(--green);font-weight:700;}
+.no{color:var(--red);font-weight:700;}
+.table-scroll{overflow-x:auto;}
+
+/* ── ASSESSOR ── */
+.assessor{background:linear-gradient(145deg,#0d1420,#0a0f18);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-top:2rem;}
+.scenario-btns{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;}
+.scn-btn{padding:6px 14px;border-radius:6px;font-size:0.76rem;font-weight:600;cursor:pointer;background:var(--bg1);border:1px solid var(--border2);color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif;}
+.scn-btn:hover{color:var(--text);border-color:rgba(200,169,110,0.4);}
+.scn-btn.active{background:rgba(200,169,110,0.12);border-color:rgba(200,169,110,0.5);color:var(--accent);}
+.assessor-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:1.5rem;}
+@media(max-width:860px){.assessor-grid{grid-template-columns:1fr;}}
+.toggle-groups{display:flex;flex-direction:column;gap:1rem;max-height:460px;overflow-y:auto;padding-right:6px;}
+.tg-head{font-size:0.64rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
+.tg-sigs{display:flex;flex-wrap:wrap;gap:6px;}
+.sig-toggle{font-family:monospace;font-size:0.72rem;font-weight:700;padding:4px 10px;border-radius:5px;cursor:pointer;background:var(--bg1);border:1px solid var(--border2);color:var(--muted);transition:all .12s;user-select:none;}
+.sig-toggle:hover{color:var(--text);}
+.sig-toggle.on{background:rgba(91,142,245,0.15);border-color:rgba(91,142,245,0.5);color:var(--blue);}
+.verdict{background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:1.5rem;}
+.verdict-action{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;margin:0.25rem 0 0.75rem;}
+.va-ALLOW{color:var(--green);}
+.va-STEP_UP{color:var(--blue);}
+.va-SOFT_LOCK{color:var(--amber);}
+.va-EMERGENCY_OUTFLOW_LOCK{color:var(--red);}
+.score-bar{background:var(--border);border-radius:999px;height:6px;overflow:hidden;margin:0.5rem 0 1rem;}
+.score-fill{height:100%;border-radius:999px;transition:width .5s cubic-bezier(.16,1,.3,1),background .3s;width:0%;}
+.verdict-line{font-size:0.78rem;color:var(--muted);line-height:1.7;padding:0.35rem 0;border-bottom:1px solid rgba(30,34,41,0.5);}
+.verdict-line:last-child{border-bottom:none;}
+.verdict-line b{color:var(--text);font-weight:600;}
+.assessor-note{font-size:0.72rem;color:var(--muted);margin-top:1.25rem;line-height:1.6;}
+
+/* ── LIMITS ── */
+.limit-list{margin-top:2rem;display:flex;flex-direction:column;gap:0.6rem;}
+.limit-item{background:var(--bg1);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;font-size:0.85rem;color:var(--muted);line-height:1.7;display:flex;gap:12px;}
+.limit-item::before{content:'—';color:var(--accent);flex-shrink:0;font-weight:700;}
+.limit-item b{color:var(--text);}
+
+/* ── CTA ── */
+.cta-block{
+  background:linear-gradient(135deg,rgba(27,58,92,0.25) 0%,rgba(16,19,24,0.8) 100%);
+  border:1px solid rgba(200,169,110,0.2);border-radius:16px;
+  padding:3.5rem 2rem;text-align:center;position:relative;overflow:hidden;
+}
+.cta-block::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(200,169,110,0.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cta-block>*{position:relative;}
+
+/* ── DOMAIN COLORS ── */
+.dom-DEVICE{background:rgba(91,142,245,0.1);color:#5b8ef5;border-color:rgba(91,142,245,0.3);}
+.dom-MALWARE{background:rgba(224,82,82,0.1);color:#e05252;border-color:rgba(224,82,82,0.3);}
+.dom-REMOTE{background:rgba(167,139,250,0.1);color:#a78bfa;border-color:rgba(167,139,250,0.3);}
+.dom-PERMISSION{background:rgba(245,200,66,0.1);color:#f5c842;border-color:rgba(245,200,66,0.3);}
+.dom-OTP{background:rgba(232,149,58,0.1);color:#E8953A;border-color:rgba(232,149,58,0.3);}
+.dom-IDENTITY{background:rgba(244,114,182,0.1);color:#f472b6;border-color:rgba(244,114,182,0.3);}
+.dom-CONTEXT{background:rgba(45,212,191,0.1);color:#2dd4bf;border-color:rgba(45,212,191,0.3);}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+@media(max-width:640px){
+  .hero-h{font-size:2rem;}
+  .sig-grid{grid-template-columns:1fr;}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}
+  .reveal{opacity:1;transform:none;}
+}
+</style>
+  
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav-inner" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;">
+  <a href="https://github.com/Gururaj-GJ-G" style="color:#e8eaf0;font-weight:800;letter-spacing:.08em;text-decoration:none;">Fraud Portfolio</a>
+  <a href="https://github.com/Gururaj-GJ-G/emergency-outflow-lock" style="color:#c8a96e;font-size:0.85rem;text-decoration:none;">View source on GitHub →</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="hero-badge-dot"></span> Independent Standard · Draft v0.2 for practitioner review</div>
+    <h1 class="hero-h">The decision layer for the <em>emergency outflow lock</em>.</h1>
+    <p class="hero-sub">When a device or identity is compromised, the decisive interval is the gap between compromise and the first fraudulent debit — seconds to minutes. ZEOL™ defines when to lock, what to lock, for how long, and why. Money leaving the account can be restricted. Money entering it never is.</p>
+    <div class="hero-pills">
+      <span class="pill"><span class="pill-dot" style="background:var(--blue);"></span>Deterministic &amp; explainable</span>
+      <span class="pill"><span class="pill-dot" style="background:var(--green);"></span>Zero PII in payloads</span>
+      <span class="pill"><span class="pill-dot" style="background:var(--red);"></span>Fail-closed on confirmed malware</span>
+      <span class="pill"><span class="pill-dot" style="background:var(--amber);"></span>Full lock lifecycle &amp; audit</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#assessor" class="btn-gold">Run a live assessment →</a>
+      <a href="#lifecycle" class="btn-outline">See the lock lifecycle</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-cell"><div class="stat-n">25</div><div class="stat-l">Signals in library v2.0</div></div>
+      <div class="stat-cell"><div class="stat-n">6</div><div class="stat-l">Named attack patterns</div></div>
+      <div class="stat-cell"><div class="stat-n">8</div><div class="stat-l">Lockable outbound rails</div></div>
+      <div class="stat-cell"><div class="stat-n">5</div><div class="stat-l">Always-allow inbound rails</div></div>
+      <div class="stat-cell"><div class="stat-n">4</div><div class="stat-l">Governed release paths</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ASYMMETRY -->
+<section class="sec" id="asymmetry">
+  <div class="wrap">
+    <div class="sec-tag reveal">The core principle</div>
+    <h2 class="sec-h reveal">The outflow asymmetry</h2>
+    <p class="sec-sub reveal">A control that can block a salary credit will never survive its first false positive. A control that pauses outbound transfers for thirty minutes while identity is re-verified usually will. Every ZEOL action is built on this distinction.</p>
+    <div class="asym-grid">
+      <div class="asym-card lockable reveal">
+        <div class="asym-head">Outgoing — restrictable, scoped by severity</div>
+        <div class="rail-row"><span class="rail-badge soft">SOFT</span><span class="rail-name">UPI Send</span><span class="rail-note">soft + emergency</span></div>
+        <div class="rail-row"><span class="rail-badge soft">SOFT</span><span class="rail-name">Card Not Present</span><span class="rail-note">soft + emergency</span></div>
+        <div class="rail-row"><span class="rail-badge soft">SOFT</span><span class="rail-name">IMPS Out</span><span class="rail-note">soft + emergency</span></div>
+        <div class="rail-row"><span class="rail-badge lock">HARD</span><span class="rail-name">NEFT Out</span><span class="rail-note">emergency only</span></div>
+        <div class="rail-row"><span class="rail-badge lock">HARD</span><span class="rail-name">RTGS Out</span><span class="rail-note">emergency only</span></div>
+        <div class="rail-row"><span class="rail-badge lock">HARD</span><span class="rail-name">International Card</span><span class="rail-note">emergency only</span></div>
+        <div class="rail-row"><span class="rail-badge lock">HARD</span><span class="rail-name">ATM Withdrawal</span><span class="rail-note">emergency only</span></div>
+        <div class="rail-row"><span class="rail-badge lock">HARD</span><span class="rail-name">Wallet Spend</span><span class="rail-note">emergency only</span></div>
+        <div class="asym-foot">A soft lock restricts only the highest-velocity rails — the ones a fraudster reaches for first. An emergency lock restricts all eight.</div>
+      </div>
+      <div class="asym-card protected reveal">
+        <div class="asym-head">Incoming — never restricted, under any lock</div>
+        <div class="rail-row"><span class="rail-badge allow">OPEN</span><span class="rail-name">Salary Credit</span></div>
+        <div class="rail-row"><span class="rail-badge allow">OPEN</span><span class="rail-name">Refunds</span></div>
+        <div class="rail-row"><span class="rail-badge allow">OPEN</span><span class="rail-name">Incoming UPI</span></div>
+        <div class="rail-row"><span class="rail-badge allow">OPEN</span><span class="rail-name">Interest Credit</span></div>
+        <div class="rail-row"><span class="rail-badge allow">OPEN</span><span class="rail-name">Account Deposits</span></div>
+        <div class="asym-foot">This asymmetry is what makes an emergency lock deployable in production, not just defensible on paper. The customer's money keeps arriving; only its exit is paused.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- WHY -->
+<section class="sec" id="why">
+  <div class="wrap">
+    <div class="sec-tag reveal">Why this standard exists</div>
+    <h2 class="sec-h reveal">Existing controls fail in three predictable ways</h2>
+    <div class="why-grid">
+      <div class="why-card reveal" style="--card-color:var(--red);">
+        <div class="why-title">Too late</div>
+        <div class="why-body">Disputes, chargebacks, and complaint processes begin after the money has left. In UPI-speed fraud, the loss is complete before the victim has unlocked their phone.</div>
+        <span class="why-tag">Post-facto</span>
+      </div>
+      <div class="why-card reveal" style="--card-color:var(--amber);">
+        <div class="why-title">Too blunt</div>
+        <div class="why-body">Full account freezes block salary credits, refunds, and incoming transfers along with the fraud. One false positive on a payday and the control gets switched off institution-wide.</div>
+        <span class="why-tag">Indiscriminate</span>
+      </div>
+      <div class="why-card reveal" style="--card-color:var(--blue);">
+        <div class="why-title">Too passive</div>
+        <div class="why-body">A risk score delivered to a dashboard nobody is watching at 2 a.m. is not a control. Detection without a governed, automatic, reversible response is observation.</div>
+        <span class="why-tag">Non-operative</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ARCHITECTURE -->
+<section class="sec" id="architecture">
+  <div class="wrap">
+    <div class="sec-tag reveal">Architecture &amp; trust boundary</div>
+    <h2 class="sec-h reveal">ZEOL consumes signals. It does not generate them.</h2>
+    <p class="sec-sub reveal">Signal collection stays where it is technically and legally feasible — the bank's own app, the bank's transaction layer, the telco identity layer. The bank remains the data fiduciary; ZEOL is a decisioning component that sees signal identifiers and opaque session references only.</p>
+    <div class="arch-steps reveal">
+      <div class="arch-step"><div class="arch-step-n">01 · SOURCE</div><div class="arch-step-t">Bank app SDK</div><div class="arch-step-d">Device integrity, permission posture, overlay &amp; remote-access indicators — collected inside the bank's own application.</div></div>
+      <div class="arch-step"><div class="arch-step-n">02 · SOURCE</div><div class="arch-step-t">Transaction systems</div><div class="arch-step-d">Beneficiary risk, amount deviation, velocity — the bank's existing transaction context.</div></div>
+      <div class="arch-step"><div class="arch-step-n">03 · SOURCE</div><div class="arch-step-t">Telco / identity feeds</div><div class="arch-step-d">SIM-change events and identity signals from where they genuinely originate.</div></div>
+      <div class="arch-step active"><div class="arch-step-n">04 · DECIDE</div><div class="arch-step-t">ZEOL /assess</div><div class="arch-step-d">Deterministic decision: action, lock scope, TTL, release paths, full explanation. Versioned policy + library.</div></div>
+      <div class="arch-step"><div class="arch-step-n">05 · ENFORCE</div><div class="arch-step-t">Bank rail controls</div><div class="arch-step-d">The bank's existing control plane enforces the lock. ZEOL never touches a payment rail.</div></div>
+    </div>
+    <div class="boundary-list">
+      <div class="boundary-item reveal"><b>No customer PII crosses the boundary.</b> Payloads carry signal IDs, checkpoint labels, and bank-side correlation references. Nothing else.</div>
+      <div class="boundary-item reveal"><b>Enforcement stays with the bank.</b> ZEOL emits a recommended action and a lock object. The rails, and the liability model around them, are untouched.</div>
+      <div class="boundary-item reveal"><b>No consumer-app detection claims.</b> Stock mobile operating systems do not let a third-party consumer app reliably observe trojans, SIM swaps, or foreign overlays. Any architecture premised on that capability is premised on one that does not exist.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SIGNALS -->
+<section class="sec" id="signals">
+  <div class="wrap">
+    <div class="sec-tag reveal">Signal Library v2.0.0</div>
+    <h2 class="sec-h reveal">25 deterministic signals, versioned as data</h2>
+    <p class="sec-sub reveal">Every assessment records the exact library and policy version that produced it — a weight change is a new version and can never silently alter decisions on in-flight traffic. POC weights are design estimates; deploying institutions recalibrate against their own confirmed-fraud data.</p>
+    <div class="sig-filters reveal" id="sig-filters"></div>
+    <p class="sig-count" id="sig-count-label"></p>
+    <div class="sig-grid" id="sig-grid"></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PATTERNS -->
+<section class="sec" id="patterns">
+  <div class="wrap">
+    <div class="sec-tag reveal">Named attack patterns</div>
+    <h2 class="sec-h reveal">Combinations decide. Sums only set the floor.</h2>
+    <p class="sec-sub reveal">Known attack shapes are matched as patterns, because signals seen together carry far more meaning than their additive sum. "Matched PAT-ATO-2" is a statement a fraud analyst, a customer-service script, and an ombudsman response can all be built on. A list of weight increments is not.</p>
+    <div class="pb-grid" id="pb-grid"></div>
+    <p class="reveal" style="font-size:0.85rem;color:var(--muted);margin-top:1.5rem;line-height:1.7;max-width:720px;">Note the deliberate escalation between PAT-ATO-1 and PAT-ATO-2: remote control plus overlay is a probable scam session — a reversible soft lock. Add a notification listener and the attacker can read OTPs, meaning transactions complete with no further victim interaction. The standard escalates to a full outflow lock at exactly that point.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ASSESSOR -->
+<section class="sec" id="assessor">
+  <div class="wrap">
+    <div class="sec-tag reveal">Interactive</div>
+    <h2 class="sec-h reveal">Run the decision model</h2>
+    <p class="sec-sub reveal">This is the actual v0.2 decision logic — additive baseline, pattern matching, and the split critical overrides — running in your browser. Load a scenario or toggle signals yourself.</p>
+    <div class="assessor reveal">
+      <div class="scenario-btns" id="scenario-btns"></div>
+      <div class="assessor-grid">
+        <div class="toggle-groups" id="toggle-groups"></div>
+        <div class="verdict">
+          <div class="sec-tag" style="margin-bottom:0;">Decision</div>
+          <div class="verdict-action" id="v-action">ALLOW</div>
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--muted);"><span>Risk score</span><span id="v-score">0 / 100</span></div>
+          <div class="score-bar"><div class="score-fill" id="v-fill"></div></div>
+          <div id="v-lines"></div>
+        </div>
+      </div>
+      <p class="assessor-note">Synthetic decision logic for demonstration. No data leaves this page. Weights are uncalibrated design estimates — see Limitations.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- LIFECYCLE -->
+<section class="sec" id="lifecycle">
+  <div class="wrap">
+    <div class="sec-tag reveal">Lock lifecycle</div>
+    <h2 class="sec-h reveal">A lock is not a boolean</h2>
+    <p class="sec-sub reveal">It is a state machine with an owner, a clock, and a paper trail. This lifecycle — not the scoring — is what makes the standard consumable by a bank: who can lift a lock, after what verification, with what evidence.</p>
+
+    <div class="chain-nodes">
+      <div class="chain-node reveal" style="--node-color:#e05252;--node-rgb:224,82,82;">
+        <div class="chain-icon">01</div>
+        <div class="chain-content">
+          <div class="chain-label" style="color:#e05252;">CREATED → ACTIVE</div>
+          <div class="chain-title">Lock created from an assessment</div>
+          <div class="chain-sig">Scope, TTL, and permitted release paths are fixed at creation and written to the audit trail alongside the matched patterns that justified it.</div>
+        </div>
+      </div>
+      <div class="chain-node reveal" style="--node-color:#E8953A;--node-rgb:232,149,58;">
+        <div class="chain-icon">02</div>
+        <div class="chain-content">
+          <div class="chain-label" style="color:#E8953A;">ACTIVE · governed release</div>
+          <div class="chain-title">Release requires a permitted path</div>
+          <div class="chain-sig">Every release attempt — permitted or denied — is an audit event with actor and evidence references. Denied attempts are evidence too.</div>
+        </div>
+      </div>
+      <div class="chain-node reveal" style="--node-color:#3ecf8e;--node-rgb:62,207,142;">
+        <div class="chain-icon">03</div>
+        <div class="chain-content">
+          <div class="chain-label" style="color:#3ecf8e;">RELEASED / EXPIRED</div>
+          <div class="chain-title">Soft locks self-release on TTL</div>
+          <div class="chain-sig">30-minute default. If no escalating signals arrive, the lock opens on its own — false positives cost the customer half an hour, not a branch visit.</div>
+        </div>
+      </div>
+      <div class="chain-node reveal" style="--node-color:#a78bfa;--node-rgb:167,139,250;">
+        <div class="chain-icon">04</div>
+        <div class="chain-content">
+          <div class="chain-label" style="color:#a78bfa;">ESCALATED</div>
+          <div class="chain-title">Emergency locks never silently open</div>
+          <div class="chain-sig">24-hour default TTL. On expiry without verified release, the case escalates to fraud operations. A hard lock's failure mode is a human review, never an open gate.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-tag reveal" style="margin-top:3rem;">Release path matrix</div>
+    <div class="table-scroll reveal">
+      <table class="rbi-table">
+        <thead><tr><th>Release path</th><th>Soft lock</th><th>Emergency lock</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td><span class="rbi-code">CUSTOMER_REAUTH</span> — in-app strong re-auth</td><td class="yes">Yes</td><td class="no">No</td><td>If the device is compromised, re-authentication happens on the compromised device. It can never be sufficient to lift an emergency lock — this single rule closes the most obvious attacker workaround.</td></tr>
+          <tr><td><span class="rbi-code">VERIFIED_CHANNEL</span> — call-back / video verification</td><td class="yes">Yes</td><td class="yes">Yes</td><td>Identity confirmed outside the compromised channel.</td></tr>
+          <tr><td><span class="rbi-code">BRANCH_VERIFICATION</span> — in person</td><td>—</td><td class="yes">Yes</td><td>The strongest path, reserved for the strongest lock.</td></tr>
+          <tr><td><span class="rbi-code">FRAUD_OPS_OVERRIDE</span> — analyst, dual control</td><td class="yes">Yes</td><td class="yes">Yes</td><td>Institutional override with named actor and evidence reference in the audit trail.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- OVERRIDES -->
+<section class="sec" id="overrides">
+  <div class="wrap">
+    <div class="sec-tag reveal">Fail-closed, with judgement</div>
+    <h2 class="sec-h reveal">Critical overrides, split by evidence quality</h2>
+    <p class="sec-sub reveal">Not all "critical" signals carry equal evidence. The standard's answer to false-positive economics: an emergency lock whose most common trigger is a legitimate SIM upgrade will be switched off by the bank within a quarter.</p>
+    <div class="table-scroll reveal">
+      <table class="rbi-table">
+        <thead><tr><th>Class</th><th>Signals</th><th>Alone</th><th>With any second signal</th></tr></thead>
+        <tbody>
+          <tr><td>Standalone critical — signature-confirmed malware</td><td><span class="rbi-code">TROJAN_01</span> <span class="rbi-code">MAL_01</span></td><td><span class="no">EMERGENCY LOCK</span></td><td><span class="no">EMERGENCY LOCK</span></td></tr>
+          <tr><td>Corroborated critical — strong but FP-prone (emulator heuristics misfire on OEM builds; SIM flags fire on legitimate upgrades)</td><td><span class="rbi-code">EMU_01</span> <span class="rbi-code">SIM_01</span></td><td><span style="color:var(--amber);font-weight:700;">SOFT LOCK + step-up</span></td><td><span class="no">EMERGENCY LOCK</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- LIMITATIONS -->
+<section class="sec" id="limitations">
+  <div class="wrap">
+    <div class="sec-tag reveal">Stated plainly</div>
+    <h2 class="sec-h reveal">Limitations &amp; non-claims</h2>
+    <p class="sec-sub reveal">Credibility is the product. What this standard does not claim:</p>
+    <div class="limit-list">
+      <div class="limit-item reveal"><span><b>Weights are uncalibrated.</b> The additive layer is a design scaffold pending institution-specific calibration against labelled fraud outcomes. The pattern and override layers carry the decision until that calibration exists.</span></div>
+      <div class="limit-item reveal"><span><b>No efficacy percentages are claimed.</b> Fraud-loss reduction for an undeployed control cannot be honestly estimated. Adopters should be sceptical of any vendor who claims otherwise.</span></div>
+      <div class="limit-item reveal"><span><b>Detection is out of scope.</b> ZEOL is only as good as the signals a deploying institution can genuinely produce. It does not confer detection capabilities the platform does not have.</span></div>
+      <div class="limit-item reveal"><span><b>Coverage is partial by design.</b> Authorised-push-payment frauds where the victim willingly transfers from a clean device — investment scams, romance scams — largely fall outside compromise-triggered locking.</span></div>
+      <div class="limit-item reveal"><span><b>Persistence is the institution's.</b> The standard specifies the state machine and audit contract. Durable storage, high availability, and dual-control workflows belong to the deploying bank.</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CTA -->
+<section class="sec">
+  <div class="wrap">
+    <div class="cta-block reveal">
+      <div class="sec-tag">Practitioner review · Pilot conversations</div>
+      <h2 class="sec-h" style="margin-bottom:0.75rem;">Reviewing outflow controls at a bank, NBFC, or PSP?</h2>
+      <p class="sec-sub" style="margin:0 auto 2rem;max-width:560px;">ZEOL v0.2 is open for practitioner review. The reference engine, API contract, and full specification are available for evaluation, and the framework maps onto your existing signal sources — not ours.</p>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="https://calendly.com/gururaj-gj-guru/30min" class="btn-gold" target="_blank" rel="noopener">Book a 30-minute review call</a>
+        <a href="https://github.com/Gururaj-GJ-G/emergency-outflow-lock" class="btn-outline">View the specification on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#111318;border-top:1px solid #1e2229;padding:1.2rem 2rem;text-align:center;font-size:0.75rem;color:#50504c;font-family:system-ui,sans-serif;">
+  © 2026 Gururaj G J · Independent open-source project ·
+  <a href="https://github.com/Gururaj-GJ-G" style="color:#c8a96e;text-decoration:none;">GitHub</a> ·
+  <a href="https://www.linkedin.com/in/gururaj-gj-52a062b4/" style="color:#c8a96e;text-decoration:none;">LinkedIn</a>
+</footer>
+
+<script>
+// ── SIGNAL LIBRARY (v2.0.0 — mirrors zeol_signals.json) ─────────────
+const SIGNALS = [
+  {id:"ROOT_01",name:"Rooted Device",w:40,dom:"DEVICE",crit:null},
+  {id:"EMU_01",name:"Emulator Detected",w:50,dom:"DEVICE",crit:"corr"},
+  {id:"HOOK_01",name:"Runtime Hooking",w:20,dom:"DEVICE",crit:null},
+  {id:"DBG_01",name:"Debugging Surface",w:10,dom:"DEVICE",crit:null},
+  {id:"APP_01",name:"Client App Tampering",w:35,dom:"DEVICE",crit:null},
+  {id:"INT_01",name:"Optional Integrity Failure",w:35,dom:"DEVICE",crit:null},
+  {id:"CLONE_01",name:"App Cloner / Work Profile Abuse",w:25,dom:"DEVICE",crit:null},
+  {id:"MAL_01",name:"Malware / Blacklisted App",w:50,cap:60,dom:"MALWARE",crit:"hard"},
+  {id:"TROJAN_01",name:"Banking Trojan Signature Match",w:55,dom:"MALWARE",crit:"hard"},
+  {id:"INSTALL_01",name:"Sideloaded Risk App",w:20,dom:"MALWARE",crit:null},
+  {id:"RC_01",name:"Remote Control App",w:25,dom:"REMOTE",crit:null},
+  {id:"OVER_01",name:"Overlay + Accessibility Combo",w:25,dom:"REMOTE",crit:null},
+  {id:"SCREEN_01",name:"Screen Capture Risk",w:20,dom:"REMOTE",crit:null},
+  {id:"PERM_01",name:"Loan Permission Combo",w:30,dom:"PERMISSION",crit:null},
+  {id:"PERM_02",name:"SMS + Device Admin Combo",w:20,dom:"PERMISSION",crit:null},
+  {id:"PERM_03",name:"Permission Drift",w:20,dom:"PERMISSION",crit:null},
+  {id:"NOTIF_01",name:"Notification Listener",w:15,dom:"OTP",crit:null},
+  {id:"OTPFWD_01",name:"OTP Auto-Forward Pattern",w:40,dom:"OTP",crit:null},
+  {id:"PHISH_01",name:"Phishing Link Click (verified domain)",w:45,dom:"IDENTITY",crit:null},
+  {id:"SIM_01",name:"SIM Swap Indicator",w:45,dom:"IDENTITY",crit:"corr"},
+  {id:"NET_01",name:"VPN / Proxy Environment",w:15,dom:"CONTEXT",crit:null},
+  {id:"SESSION_01",name:"Rapid Retry Pattern",w:15,dom:"CONTEXT",crit:null},
+  {id:"GEOVEL_01",name:"Geo-Velocity Anomaly",w:30,dom:"CONTEXT",crit:null},
+  {id:"BENEF_01",name:"New/High-Risk Beneficiary",w:25,dom:"CONTEXT",crit:null},
+  {id:"AMT_01",name:"Amount Deviation from Baseline",w:20,dom:"CONTEXT",crit:null},
+];
+const DOMS = {DEVICE:"Device & App Integrity",MALWARE:"Malware",REMOTE:"Remote Access",PERMISSION:"Permissions",OTP:"OTP Risk",IDENTITY:"Identity & Phishing",CONTEXT:"Context & Transaction"};
+
+const PATTERNS = [
+  {id:"PAT-ATO-1",name:"Remote-access session",req:["RC_01","OVER_01"],action:"SOFT_LOCK",
+   why:"Remote-control app plus overlay/accessibility abuse indicates a screen-sharing scam or RAT session in progress."},
+  {id:"PAT-ATO-2",name:"Remote-access takeover with OTP interception",req:["RC_01","OVER_01","NOTIF_01"],action:"EMERGENCY_OUTFLOW_LOCK",
+   why:"Full remote-access triad: control channel, overlay capture, and a notification listener able to read OTPs. The attacker can complete transactions without further victim interaction."},
+  {id:"PAT-ATO-3",name:"SIM-swap account takeover",req:["SIM_01","GEOVEL_01"],action:"EMERGENCY_OUTFLOW_LOCK",
+   why:"SIM-change indicator plus impossible-travel anomaly corroborate identity compromise rather than a legitimate SIM upgrade."},
+  {id:"PAT-TRJ-1",name:"Trojan-driven phishing session",req:["PHISH_01","TROJAN_01"],action:"EMERGENCY_OUTFLOW_LOCK",
+   why:"Verified phishing click followed by trojan signature match — infection vector and payload observed in the same session."},
+  {id:"PAT-OTP-1",name:"OTP exfiltration chain",req:["OTPFWD_01","NOTIF_01"],action:"SOFT_LOCK",
+   why:"OTP auto-forward behaviour with a live notification listener; the second factor can no longer be trusted for this session."},
+  {id:"PAT-MULE-1",name:"Coached first-time transfer",req:["BENEF_01","AMT_01","GEOVEL_01"],action:"SOFT_LOCK",
+   why:"New high-risk beneficiary, amount far from baseline, and location anomaly in one attempt — consistent with a coached transfer even on a clean device."},
+];
+
+const SCENARIOS = [
+  {label:"Trojan phishing session",sigs:["PHISH_01","TROJAN_01","OTPFWD_01"]},
+  {label:"Clean login on VPN",sigs:["NET_01","SESSION_01"]},
+  {label:"SIM-swap takeover",sigs:["SIM_01","GEOVEL_01","BENEF_01"]},
+  {label:"Remote-access triad",sigs:["RC_01","OVER_01","NOTIF_01"]},
+  {label:"Lone SIM flag (FP case)",sigs:["SIM_01"]},
+  {label:"Clear",sigs:[]},
+];
+
+const HARD = new Set(["TROJAN_01","MAL_01"]);
+const CORR = new Set(["EMU_01","SIM_01"]);
+const RANK = {ALLOW:0,STEP_UP:1,SOFT_LOCK:2,EMERGENCY_OUTFLOW_LOCK:3};
+const ACTION_LABEL = {ALLOW:"ALLOW",STEP_UP:"STEP-UP AUTH",SOFT_LOCK:"SOFT LOCK",EMERGENCY_OUTFLOW_LOCK:"EMERGENCY OUTFLOW LOCK"};
+const SMAP = Object.fromEntries(SIGNALS.map(s=>[s.id,s]));
+
+// ── Decision model (mirrors zeol_engine.py v0.2) ────────────────────
+function assessZeol(triggered){
+  const t = [...new Set(triggered)];
+  let raw = Math.min(100, t.reduce((a,id)=>{const s=SMAP[id];return a+Math.min(s.w, s.cap||s.w);},0));
+  let action = raw<=30?"ALLOW":raw<=60?"STEP_UP":raw<=85?"SOFT_LOCK":"EMERGENCY_OUTFLOW_LOCK";
+  const lines = t.map(id=>({t:"sig",html:`<b>${id}</b> — ${SMAP[id].name} <span style="color:var(--amber);">(+${Math.min(SMAP[id].w,SMAP[id].cap||SMAP[id].w)})</span>`}));
+
+  const matched = PATTERNS.filter(p=>p.req.every(r=>t.includes(r)));
+  matched.forEach(p=>{
+    if(RANK[p.action]>RANK[action]) action=p.action;
+    lines.push({t:"pat",html:`Pattern <b>${p.id}</b> matched — ${p.name}. ${p.why}`});
+  });
+
+  const hard = t.filter(id=>HARD.has(id));
+  const corr = t.filter(id=>CORR.has(id));
+  if(hard.length){
+    action="EMERGENCY_OUTFLOW_LOCK";
+    lines.push({t:"ovr",html:`<b>Fail-closed override:</b> ${hard.join(", ")} are signature-confirmed criticals and cannot be offset by other factors.`});
+  } else if(corr.length){
+    if(t.length>=2){
+      action="EMERGENCY_OUTFLOW_LOCK";
+      lines.push({t:"ovr",html:`<b>Corroborated critical:</b> ${corr.join(", ")} confirmed by additional signals in the same session.`});
+    } else if(RANK[action]<RANK.SOFT_LOCK){
+      action="SOFT_LOCK";
+      lines.push({t:"ovr",html:`<b>${corr.join(", ")} without corroboration.</b> Known false-positive risk (emulator heuristics, legitimate SIM upgrades) — reversible soft lock with mandatory step-up rather than a fail-closed emergency lock.`});
+    }
+  }
+
+  let score = raw;
+  if(action==="EMERGENCY_OUTFLOW_LOCK" && score<86) score=86;
+  else if(action==="SOFT_LOCK" && score<61) score=61;
+
+  return {score, action, lines, matched};
+}
+
+// ── SIGNAL GRID + FILTERS ────────────────────────────────────────────
+(function(){
+  const filters=document.getElementById('sig-filters'), grid=document.getElementById('sig-grid'), label=document.getElementById('sig-count-label');
+  const doms=["ALL",...Object.keys(DOMS)];
+  doms.forEach(d=>{
+    const b=document.createElement('button');
+    b.className='sig-filter'+(d==="ALL"?" active":"");
+    const n=d==="ALL"?SIGNALS.length:SIGNALS.filter(s=>s.dom===d).length;
+    b.innerHTML=`${d==="ALL"?"All":DOMS[d]} <span style="opacity:0.6;">${n}</span>`;
+    b.onclick=()=>{filters.querySelectorAll('.sig-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');render(d);};
+    filters.appendChild(b);
+  });
+  function wClass(w){return w>=40?"":w>=25?"med":"low";}
+  function render(dom){
+    const list=dom==="ALL"?SIGNALS:SIGNALS.filter(s=>s.dom===dom);
+    label.textContent=dom==="ALL"?`Showing all ${SIGNALS.length} signals across ${Object.keys(DOMS).length} domains`:`Showing ${list.length} ${DOMS[dom]} signals`;
+    grid.innerHTML=list.map(s=>`
+      <div class="sig-card">
+        <div class="sig-card-header"><span class="sig-id">${s.id}</span><span class="sig-weight ${wClass(s.w)}">+${s.w}${s.cap?` · cap ${s.cap}`:""}</span></div>
+        <div class="sig-name">${s.name}</div>
+        <span class="sig-domain-badge dom-${s.dom}">${DOMS[s.dom]}</span>${s.crit==="hard"?'<span class="sig-crit">Fail-closed</span>':s.crit==="corr"?'<span class="sig-crit corr">Corroborated critical</span>':""}
+      </div>`).join("");
+  }
+  render("ALL");
+})();
+
+// ── PATTERN CARDS ────────────────────────────────────────────────────
+(function(){
+  document.getElementById('pb-grid').innerHTML=PATTERNS.map((p,i)=>`
+    <div class="pb-card reveal">
+      <div class="pb-num">0${i+1}</div>
+      <div class="pb-tag-top" style="color:${p.action==="SOFT_LOCK"?"var(--amber)":"var(--red)"};">${p.id}</div>
+      <div class="pb-title">${p.name}</div>
+      <div class="pb-sigs">${p.req.map(r=>`<span class="pb-sig">${r}</span>`).join("")}</div>
+      <div class="pb-body">${p.why}</div>
+      <span class="pb-action ${p.action==="SOFT_LOCK"?"soft":"hard"}">${ACTION_LABEL[p.action]}</span>
+    </div>`).join("");
+})();
+
+// ── ASSESSOR ─────────────────────────────────────────────────────────
+(function(){
+  const on=new Set();
+  const groups=document.getElementById('toggle-groups');
+  Object.keys(DOMS).forEach(d=>{
+    const wrap=document.createElement('div');
+    wrap.innerHTML=`<div class="tg-head">${DOMS[d]}</div>`;
+    const row=document.createElement('div');row.className='tg-sigs';
+    SIGNALS.filter(s=>s.dom===d).forEach(s=>{
+      const t=document.createElement('span');
+      t.className='sig-toggle';t.textContent=s.id;t.title=s.name;t.dataset.id=s.id;
+      t.onclick=()=>{on.has(s.id)?on.delete(s.id):on.add(s.id);t.classList.toggle('on');clearScn();update();};
+      row.appendChild(t);
+    });
+    wrap.appendChild(row);groups.appendChild(wrap);
+  });
+
+  const scnWrap=document.getElementById('scenario-btns');
+  SCENARIOS.forEach(sc=>{
+    const b=document.createElement('button');
+    b.className='scn-btn';b.textContent=sc.label;
+    b.onclick=()=>{
+      on.clear();sc.sigs.forEach(x=>on.add(x));
+      document.querySelectorAll('.sig-toggle').forEach(t=>t.classList.toggle('on',on.has(t.dataset.id)));
+      scnWrap.querySelectorAll('.scn-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+      update();
+    };
+    scnWrap.appendChild(b);
+  });
+  function clearScn(){scnWrap.querySelectorAll('.scn-btn').forEach(x=>x.classList.remove('active'));}
+
+  const vA=document.getElementById('v-action'),vS=document.getElementById('v-score'),vF=document.getElementById('v-fill'),vL=document.getElementById('v-lines');
+  const COLORS={ALLOW:"var(--green)",STEP_UP:"var(--blue)",SOFT_LOCK:"var(--amber)",EMERGENCY_OUTFLOW_LOCK:"var(--red)"};
+  function update(){
+    const r=assessZeol([...on]);
+    vA.textContent=ACTION_LABEL[r.action];
+    vA.className='verdict-action va-'+r.action;
+    vS.textContent=r.score+" / 100";
+    vF.style.width=r.score+"%";vF.style.background=COLORS[r.action];
+    const scope = r.action==="EMERGENCY_OUTFLOW_LOCK" ? "All 8 outbound rails locked · 24h TTL · verified-channel release only"
+                : r.action==="SOFT_LOCK" ? "UPI Send, CNP, IMPS Out locked · 30min TTL · in-app re-auth can release"
+                : r.action==="STEP_UP" ? "No lock · additional authentication required" : "No restriction";
+    let html=`<div class="verdict-line"><b>Lock scope:</b> ${scope}</div>
+              <div class="verdict-line"><b>Incoming rails:</b> <span style="color:var(--green);font-weight:600;">always open</span> — salary, refunds, incoming UPI, interest, deposits</div>`;
+    if(!r.lines.length) html+=`<div class="verdict-line">No signals triggered.</div>`;
+    r.lines.forEach(l=>{html+=`<div class="verdict-line">${l.html}</div>`;});
+    vL.innerHTML=html;
+  }
+  update();
+})();
+
+// ── REVEAL ───────────────────────────────────────────────────────────
+(function(){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+})();
+</script>
+
+</body>
+</html>
